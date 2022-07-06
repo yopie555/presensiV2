@@ -5,6 +5,8 @@ import profileRedcer from './profileReducer';
 import histoyReducer from './historyReducer';
 import locationReducer from './locationReducer';
 import addressReducer from './addressReducer';
+import datangReducer from './datangReducer';
+import pulangReducer from './pulangReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -12,7 +14,9 @@ const rootReducer = combineReducers({
     profile: profileRedcer,
     history: histoyReducer,
     location: locationReducer,
-    address: addressReducer
+    address: addressReducer,
+    datang: datangReducer,
+    pulang: pulangReducer
 })
 
 export default rootReducer

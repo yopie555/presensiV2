@@ -23,6 +23,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import BerhasilModal from '../components/PresensiBerhasil'
 import LocationModal from '../components/LocationModal';
 import { locationAction, addressAction } from '../actions/locationAction';
+import { datangAction } from '../actions/absenAction';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 
@@ -55,7 +56,6 @@ const Presensi = ({ navigation }) => {
             let response_getGeo = await getGeo()
             if (response_getGeo) {
                 address(response_getGeo.latitude, response_getGeo.longitude)
-                // submitPresensiD(response_getGeo.latitude, response_getGeo.longitude)
             }
             setLoading(false)
         })();
@@ -177,7 +177,20 @@ const Presensi = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.datangButton2}
-                                onPress={console.log('pressed')}
+                                onPress={() => {
+                                    setLoading(true)
+                                    dispatch(datangAction({
+                                        latitude: lat,
+                                        longitude: long,
+                                        token: auth.auth.token,
+                                        nip: auth.auth.username,
+                                        ip,
+                                        id,
+                                        lokasi: thisAddress.address.place_name
+                                    }))
+                                    setLoading(false)
+                                    // navigation.navigate("HomepageScreen")
+                                }}
                             >
                                 <Text style={styles.datangText}>Presensi</Text>
                             </TouchableOpacity>
