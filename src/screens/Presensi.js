@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BerhasilModal from '../components/PresensiBerhasil'
 import LocationModal from '../components/LocationModal';
-import { locationAction } from '../actions/locationAction';
+import { locationAction, addressAction } from '../actions/locationAction';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 
@@ -31,18 +31,22 @@ import Background from '../assets/background4.png'
 
 const Presensi = ({ navigation }) => {
     const [CurrentTime, setCurrentTime] = useState('');
+    const [date, setDate] = useState(new Date());
     const [long, setLong] = useState('');
     const [lat, setLat] = useState('');
     const [ip, setIp] = useState("");
     const [id, setId] = useState("");
-    const auth = useSelector((state) => state.auth);
-    const [locVisible, setLocVisible] = useState(true);
+    const [berhasilVisible, setBerhasilVisible] = useState(false);
+    const [locVisible, setLocVisible] = useState(false);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
 
+    const auth = useSelector((state) => state.auth);
+    const thisAddress = useSelector((state) => state.address);
+
     const address = (latitude, longitude) => {
         dispatch(locationAction({ latitude: latitude, longitude: longitude, token: auth.auth.token, nip: auth.auth.username, ip, id }));
-        // dispatch(addressAction({ latitude: latitude, longitude: longitude }))
+        dispatch(addressAction({ latitude: latitude, longitude: longitude }))
     }
 
     useEffect(() => {
@@ -65,6 +69,15 @@ const Presensi = ({ navigation }) => {
         setIp(ipAddress)
     });
 
+    const p = date.getFullYear()
+    const q = date.getMonth() + 1
+    const r = date.getDate()
+
+    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        monthName = months[date.getMonth()];
+
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"],
+        dayName = days[date.getDay()];
 
     setInterval(() => {
         var timeMoment = moment().format('LTS');
@@ -78,8 +91,6 @@ const Presensi = ({ navigation }) => {
         .then(location => {
             setLong(location.longitude);
             setLat(location.latitude)
-            console.log('loca', location);
-
             return location
         })
         .catch(error => {
@@ -88,82 +99,93 @@ const Presensi = ({ navigation }) => {
             Alert.alert('Turn On Your Location')
         })
     return (
-        <KeyboardAvoidingView>
-            <ScrollView bounces={false}>
-                <View style={styles.container}>
-                    {/* <StatusBar hidden={true} /> */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={locVisible}
-                        onRequestClose={() => {
-                            setLocVisible(false);
-                        }}>
-                        <View style={styles.welcomeModal}>
-                            <LocationModal setLocVisible={setLocVisible} />
-                        </View>
-                    </Modal>
-                    {/* <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={berhasilVisible}
-                        onRequestClose={() => {
-                            setBerhasilVisible(false);
-                        }}>
-                        <View style={styles.welcomeModal}>
-                            <BerhasilModal setBerhasilVisible={setBerhasilVisible} />
-                        </View>
-                    </Modal> */}
-                    <ImageBackground
-                        source={Background}
-                        style={styles.background}>
-                        <Image
-                            source={Logo2}
-                            style={styles.logo2} />
+        <ImageBackground
+            source={Background}
+            style={styles.background}>
+            <View style={styles.container}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={locVisible}
+                    onRequestClose={() => {
+                        setLocVisible(false);
+                    }}>
+                    <View style={styles.welcomeModal}>
+                        <LocationModal setLocVisible={setLocVisible} />
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={berhasilVisible}
+                    onRequestClose={() => {
+                        setBerhasilVisible(false);
+                    }}>
+                    <View style={styles.welcomeModal}>
+                        <BerhasilModal setBerhasilVisible={setBerhasilVisible} />
+                    </View>
+                </Modal>
 
-                        <View style={styles.container2}>
+                <Image
+                    source={Logo2}
+                    style={styles.logo2} />
 
-                            <View style={styles.container3}>
-                                <Text style={styles.textTitle}>Presensi Datang</Text>
-                            </View>
-                            <View style={styles.container5}>
-                                <Text style={styles.textJam}>Jam Server : {CurrentTime}</Text>
-                            </View>
-                            <View style={styles.container6}>
-                                <View style={styles.container7}>
-                                    <Text style={styles.textGeo}>
-                                        {/* {thisAddress.address.place_name} */}
-                                    </Text>
-                                </View>
-                            </View>
-                            <ScrollView style={styles.container8}>
-                                <View style={styles.container9}>
-                                    <TouchableOpacity
-                                        style={styles.datangButton}
-                                        onPress={async () => {
-                                            // setLoading(true)
-                                            // await dispatch(presensiAction({ token: user.auth.token, nip: user.auth.nip }));
-                                            // setLoading(false)
-                                            navigation.reset({
-                                                index: 0,
-                                                routes: [{ name: 'HomepageScreen' }],
-                                            });
-                                        }}>
-                                        <Text style={styles.datangText}>Tutup</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.datangButton2}
-                                    // onPress={console.log('pressed')}
-                                    >
-                                        <Text style={styles.datangText}>Simpan</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </ScrollView>
+                <View style={styles.container2}>
+
+                    <View style={styles.container3}>
+                        <Text style={styles.textTitle}>Presensi Datang</Text>
+                    </View>
+                    {/* <View style={styles.container5}>
+                        <Text style={styles.textJam}>Tanggal : {dayName}, {r}/{monthName}/{p}</Text>
+                        <Text style={styles.textJam}>Jam Server : {CurrentTime}</Text>
+                    </View> */}
+                    <View style={styles.container6}>
+                        <Text style={styles.textJam}>Tanggal</Text>
+                        <View style={styles.container7}>
+                            <Text style={styles.textGeo}>
+                                {dayName}, {r}/{monthName}/{p}
+                            </Text>
                         </View>
-                    </ImageBackground>
+                    </View>
+                    <View style={styles.container6}>
+                        <Text style={styles.textJam}>Jam Server</Text>
+                        <View style={styles.container7}>
+                            <Text style={styles.textGeo}>
+                                {CurrentTime}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.container6}>
+                        <Text style={styles.textJam}>Lokasi</Text>
+                        <View style={styles.container7}>
+                            <Text style={styles.textGeo}>
+                                {thisAddress?.address?.place_name}
+                            </Text>
+                        </View>
+                    </View>
+                    <ScrollView style={styles.container8}>
+                        <View style={styles.container9}>
+                            <TouchableOpacity
+                                style={styles.datangButton}
+                                onPress={async () => {
+                                    navigation.reset({
+                                        index: 0,
+                                        routes: [{ name: 'HomepageScreen' }],
+                                    });
+                                }}>
+                                <Text style={styles.datangText}>Batal</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.datangButton2}
+                                onPress={console.log('pressed')}
+                            >
+                                <Text style={styles.datangText}>Presensi</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </View>
-            </ScrollView >
-        </KeyboardAvoidingView >
+            </View>
+        </ImageBackground>
     )
 }
 
@@ -189,7 +211,8 @@ const styles = StyleSheet.create({
         // marginBottom: 10,
         width: wp('95%'),
         borderWidth: 1,
-        borderColor: '#c4c4c4'
+        borderColor: '#c4c4c4',
+        marginBottom: 20
     },
     container5: {
         width: wp('95%'),
@@ -200,7 +223,7 @@ const styles = StyleSheet.create({
         width: wp('95%'),
         alignItems: 'center',
         // borderColor: '#c4c4c4',
-        marginBottom: 15,
+        marginBottom: 10,
     },
     container7: {
         flexDirection: 'row',
@@ -241,6 +264,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         color: '#264384',
         paddingVertical: 3,
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     textGeo: {
         borderWidth: 1,
@@ -249,7 +274,7 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
         paddingHorizontal: 10,
         fontSize: 18,
-        borderColor: "#264384"
+        borderColor: "#264384",
     },
     inputText2: {
         width: '95%',

@@ -41,10 +41,14 @@ export const loginAction = (value) => {
             await AsyncStorage.setItem('username', value.nip);
             await AsyncStorage.setItem('token', res.data.result.token);
             await AsyncStorage.setItem('password', value.password);
+            await AsyncStorage.setItem('ip', value.ip)
+            await AsyncStorage.setItem('mac', value.id)
             dispatch(getLoginSuccess({
                 username: value.nip,
                 token: res.data.result.token,
-                password: value.password
+                password: value.password,
+                ip: value.ip,
+                mac: value.mac
             }));
         }
         catch (error) {
@@ -82,6 +86,8 @@ export const logoutAction = () => {
         try {
             await AsyncStorage.removeItem('token');
             await AsyncStorage.removeItem('password');
+            await AsyncStorage.removeItem('ip');
+            await AsyncStorage.removeItem('mac');
             dispatch(logoutSuccess());
         }
         catch (error) {

@@ -2,26 +2,26 @@ import * as types from '../constants/General';
 
 const initialState = {
     loading: true,
-    location: [],
+    address: [],
     error: null,
 }
 
-function locationReducer(state = initialState, action) {
+function addressReducer(state = initialState, action) {
     switch (action.type) {
-        case types.LOCATION_REQUEST:
+        case types.ADDRESS_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null,
             }
-        case types.LOCATION_SUCCESS:
+        case types.ADDRESS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                location: action.payload,
+                address: action.payload,
                 error: null,
             }
-        case types.LOCATION_FAILURE:
+        case types.ADDRESS_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -32,4 +32,4 @@ function locationReducer(state = initialState, action) {
     }
 }
 
-export default locationReducer;
+export default addressReducer;

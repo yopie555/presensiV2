@@ -2,14 +2,12 @@ import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const location = (props) => {
     const navigation = useNavigation();
     const loc = useSelector((state) => state.location)
-    console.log('loc', loc.location.message)
+    // console.log('loc', loc)
 
     return (
         <View style={styles.container}>
@@ -26,9 +24,9 @@ const location = (props) => {
                 />
             </TouchableOpacity> */}
             {loc.location.status_lokasi === 1 ?
-                <Text style={styles.text}>{loc.location.message}</Text>
+                <Text style={styles.text}>{loc?.location?.message}</Text>
                 :
-                <Text style={styles.text}>{loc.location.message} {"\n"} {"\n"} Anda Tidak Dapat Melanjutkan Proses Presensi</Text>
+                <Text style={styles.text}>{loc?.location?.message} {"\n"} {"\n"} Anda Tidak Dapat Melanjutkan Proses Presensi</Text>
             }
             {loc.location.status_lokasi === 1 ?
                 <TouchableOpacity
