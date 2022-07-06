@@ -25,22 +25,13 @@ const Header = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth);
     const profile = useSelector((state) => state.profile)
-    // const presensi = useSelector((state) => state.presensi)
-    // console.log('profiles', profile);
-
-    // if (profile.error) {
-    //     removeValue(),
-    //         // Alert.alert('Error', profile.error, [{ text: 'OK' }])
-    //         () => navigation.navigate('LoginScreen') && ToastAndroid.show('Anda harus login terlebih dahulu', ToastAndroid.SHORT)
-    //     // dispatch(logoutAction())
-    // }
 
     {
         profile.error &&
             removeValue()
         if (profile.error) {
-            ToastAndroid.show('Terjadi Kesalahan, Silahkan Login Kembali', ToastAndroid.SHORT) && dispatch(logoutAction()) && navigation.navigate('LoginScreen')
-            // Alert.alert("Terjadi Kesalahan, Silahkan Login Kembali"),
+            // ToastAndroid.show('Terjadi Kesalahan, Silahkan Login Kembali', ToastAndroid.SHORT) 
+            Alert.alert("Terjadi Kesalahan, Silahkan Login Kembali") && dispatch(logoutAction()) && navigation.navigate('LoginScreen')
         }
     }
     return (
@@ -51,11 +42,11 @@ const Header = () => {
                 color={"#264384"}
             />
             <Text style={styles.text}>
-                {profile.profile.Name}
+                {profile?.profile?.Name}
                 {'\n'}
-                NIP : {user.auth.nip}
+                NIP : {user?.auth?.nip}
                 {'\n'}
-                {profile.profile.Unit}
+                {profile?.profile?.Unit}
             </Text>
             <TouchableOpacity
                 style={styles.btn1}

@@ -109,23 +109,10 @@ const UserScreen = () => {
 const App = () => {
   const user = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true)
   useEffect(() => {
     dispatch(checkLogin());
   }, []);
 
-  if (user.loading == true) {
-    return (
-      <View style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#264384',
-      }}>
-        <ActivityIndicator size="large" color="#DAC34D" />
-      </View>
-    );
-  }
 
   return (
     <NavigationContainer>

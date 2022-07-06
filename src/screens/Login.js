@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../actions/authAction';
-
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DeviceInfo from 'react-native-device-info';
+import { NetworkInfo } from 'react-native-network-info';
 
 import Logo from '../assets/presensi.png'
 import Logo2 from '../assets/umrah.png'
@@ -24,9 +24,20 @@ import Background from '../assets/background2.png'
 const Login = ({ navigation }) => {
     const [nip, setNip] = useState("");
     const [password, setPassword] = useState("");
+    const [ip, setIp] = useState("");
+    const [id, setId] = useState("");
     const [loading, setLoading] = useState(false)
     const user = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+
+    DeviceInfo.getAndroidId().then((androidId) => {
+        setId(androidId)
+    });
+
+    NetworkInfo.getIPAddress().then(ipAddress => {
+        setIp(ipAddress)
+    });
+
     return (
         <View style={styles.container}>
             {/* <StatusBar hidden={true} /> */}
@@ -72,9 +83,16 @@ const Login = ({ navigation }) => {
                             placeholder="Kata Sandi"
                         />
                     </View>
-                    {/* {user.error && (
-                        <Text style={{ color: 'red', marginHorizontal: 55 }}>Periksa Kembali NIK atau Password Anda</Text>
-                    )} */}
+                    {user.error && (
+                        <View style={{ backgroundColor: 'red', marginHorizontal: 20, paddingVertical: 5, borderRadius: 10 }}>
+                            <Text style={{
+                                color: '#fff',
+                                marginHorizontal: 55,
+                                textAlign: 'center',
+                                fontWeight: 'bold'
+                            }}>{user.error}</Text>
+                        </View>
+                    )}
                     <TouchableOpacity
                         style={styles.loginBtn}
                         onPress={async () => {
@@ -83,7 +101,7 @@ const Login = ({ navigation }) => {
                             ) { ToastAndroid.show("Harap Isi Semua Data", 2000) }
                             else {
                                 setLoading(true)
-                                await dispatch(loginAction({ nip, password }))
+                                await dispatch(loginAction({ nip, password, ip, id }))
                                 setLoading(false)
                                 // navigation.navigate("HomepageScreen")
                             }
@@ -108,8 +126,8 @@ const Login = ({ navigation }) => {
                     </TouchableOpacity>
                     <Text style={styles.panduan}>Panduan Aplikasi</Text>
                 </View>
-            </ImageBackground>
-        </View>
+            </ImageBackground >
+        </View >
     );
 }
 

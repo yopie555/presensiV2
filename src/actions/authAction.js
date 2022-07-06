@@ -29,6 +29,8 @@ export const loginAction = (value) => {
                 {
                     username: value.nip,
                     password: value.password,
+                    ip: "36.66.35.6",
+                    mac: "a"
                 },
                 {
                     headers: {
@@ -41,13 +43,12 @@ export const loginAction = (value) => {
             await AsyncStorage.setItem('password', value.password);
             dispatch(getLoginSuccess({
                 username: value.nip,
-                token: res.data.access_token,
+                token: res.data.result.token,
                 password: value.password
             }));
         }
         catch (error) {
-            console.log('Get User Error', error);
-            dispatch(getLoginFailure(error));
+            dispatch(getLoginFailure(error.response.data.message));
         }
     }
 }
