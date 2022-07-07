@@ -16,6 +16,7 @@ import { loginAction } from '../actions/authAction';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
+import publicIP from 'react-native-public-ip';
 
 import Logo from '../assets/presensi.png'
 import Logo2 from '../assets/umrah.png'
@@ -34,9 +35,16 @@ const Login = ({ navigation }) => {
         setId(androidId)
     });
 
-    NetworkInfo.getIPAddress().then(ipAddress => {
-        setIp(ipAddress)
-    });
+    publicIP()
+        .then(ip => {
+            setIp(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIp(error);
+            // 'Unable to get IP address.'
+        });
+
 
     return (
         <View style={styles.container}>

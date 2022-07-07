@@ -25,7 +25,7 @@ import LocationModal from '../components/LocationModal';
 import { locationAction, addressAction } from '../actions/locationAction';
 import { datangAction } from '../actions/absenAction';
 import DeviceInfo from 'react-native-device-info';
-import { NetworkInfo } from 'react-native-network-info';
+import publicIP from 'react-native-public-ip';
 
 import Logo2 from '../assets/umrah.png'
 import Background from '../assets/background4.png'
@@ -38,13 +38,13 @@ const Presensi = ({ navigation }) => {
     const [ip, setIp] = useState("");
     const [id, setId] = useState("");
     const [berhasilVisible, setBerhasilVisible] = useState(false);
-    const [locVisible, setLocVisible] = useState(false);
+    const [locVisible, setLocVisible] = useState(true);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
 
     const auth = useSelector((state) => state.auth);
     const thisAddress = useSelector((state) => state.address);
-
+    const loc = useSelector((state) => state.location)
     const address = (latitude, longitude) => {
         dispatch(locationAction({ latitude: latitude, longitude: longitude, token: auth.auth.token, nip: auth.auth.username, ip, id }));
         dispatch(addressAction({ latitude: latitude, longitude: longitude }))
@@ -65,9 +65,16 @@ const Presensi = ({ navigation }) => {
         setId(androidId)
     });
 
-    NetworkInfo.getIPAddress().then(ipAddress => {
-        setIp(ipAddress)
-    });
+
+    publicIP()
+        .then(ip => {
+            setIp(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIp(error);
+            // 'Unable to get IP address.'
+        });
 
     const p = date.getFullYear()
     const q = date.getMonth() + 1
@@ -97,6 +104,7 @@ const Presensi = ({ navigation }) => {
             const { code, message } = error;
             console.warn(code, message);
             Alert.alert('Turn On Your Location')
+            navigation.navigate('HomepageScreen')
         })
     return (
         <ImageBackground
@@ -189,6 +197,7 @@ const Presensi = ({ navigation }) => {
                                         lokasi: thisAddress.address.place_name
                                     }))
                                     setLoading(false)
+                                    setBerhasilVisible(true)
                                     // navigation.navigate("HomepageScreen")
                                 }}
                             >

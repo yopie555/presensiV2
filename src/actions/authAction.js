@@ -18,8 +18,6 @@ export const getLoginFailure = (error) => ({
 })
 
 export const loginAction = (value) => {
-    console.log('as', value);
-
     return async (dispatch) => {
         try {
             dispatch(getLoginRequest());
@@ -29,8 +27,8 @@ export const loginAction = (value) => {
                 {
                     username: value.nip,
                     password: value.password,
-                    ip: "36.66.35.6",
-                    mac: "a"
+                    ip: value.ip,
+                    mac: value.id
                 },
                 {
                     headers: {
@@ -41,8 +39,6 @@ export const loginAction = (value) => {
             await AsyncStorage.setItem('username', value.nip);
             await AsyncStorage.setItem('token', res.data.result.token);
             await AsyncStorage.setItem('password', value.password);
-            await AsyncStorage.setItem('ip', value.ip)
-            await AsyncStorage.setItem('mac', value.id)
             dispatch(getLoginSuccess({
                 username: value.nip,
                 token: res.data.result.token,

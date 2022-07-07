@@ -46,6 +46,7 @@ const Homepage2 = ({ navigation }) => {
     //         </View>
     //     );
     // }
+    console.log('presensi', presensi);
 
     return (
         <View style={styles.container}>
@@ -79,13 +80,13 @@ const Homepage2 = ({ navigation }) => {
                 >
                     <View style={styles.container8}>
                         <Text style={styles.descriptionText}>Jam Datang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi_new?.jam_dtg}</Text>
+                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_dtg}</Text>
                         <Text style={styles.descriptionText}>Lokasi Datang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi_new?.lokasi_dtg}</Text>
+                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_dtg}</Text>
                         <Text style={styles.descriptionText}>Jam Pulang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi_new?.jam_plg}</Text>
+                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_plg}</Text>
                         <Text style={styles.descriptionText}>Lokasi Pulang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi_new?.lokasi_plg}</Text>
+                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_plg}</Text>
                     </View>
                 </ScrollView>
                 <View style={styles.container9}>
