@@ -26,12 +26,8 @@ export const datangAction = (value) => {
             const res = await axios.post(
                 url,
                 {
-                    ip: value.ip,
-                    longitude: value.longitude,
-                    latitude: value.latitude,
-                    ip: value.ip,
+                    ip: '170.0.0.0',
                     mac: value.id,
-                    lokasi_datang: value.lokasi
                 },
                 {
                     headers: {
@@ -43,7 +39,7 @@ export const datangAction = (value) => {
             dispatch(getDatangSuccess(res.data));
         } catch (error) {
             console.log('Get datang Error', error.response.data);
-            dispatch(getDatangFailure(error));
+            dispatch(getDatangFailure(error.response.data));
         }
     };
 };
@@ -72,12 +68,8 @@ export const pulangAction = (value) => {
             const res = await axios.post(
                 url,
                 {
-                    ip: value.ip,
-                    longitude: value.longitude,
-                    latitude: value.latitude,
-                    ip: value.ip,
+                    ip: '170.0.0.0',
                     mac: value.id,
-                    lokasi_pulang: value.lokasi
                 },
                 {
                     headers: {
@@ -89,7 +81,7 @@ export const pulangAction = (value) => {
             dispatch(getPulangSuccess(res.data));
         } catch (error) {
             console.log('Get Pulang Error', error.response.data);
-            dispatch(getPulangFailure(error));
+            dispatch(getPulangFailure(error.response.data));
         }
     };
 };

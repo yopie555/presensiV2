@@ -20,7 +20,7 @@ export const locationAction = (value) => {
     return async (dispatch) => {
         try {
             dispatch(getLocationRequest());
-            let url = `${BASE_URL}/cek_lokasi?username=${value.nip}&token=${value.token}&ip=36.66.35.6`
+            let url = `${BASE_URL}/cek_lokasi?username=${value.nip}&token=${value.token}&ip=170.0.0.0`
             const res = await axios.post(
                 url,
                 {

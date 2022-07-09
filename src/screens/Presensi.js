@@ -26,6 +26,7 @@ import { locationAction, addressAction } from '../actions/locationAction';
 import { datangAction } from '../actions/absenAction';
 import DeviceInfo from 'react-native-device-info';
 import publicIP from 'react-native-public-ip';
+import { NetworkInfo } from 'react-native-network-info';
 
 import Logo2 from '../assets/umrah.png'
 import Background from '../assets/background4.png'
@@ -41,40 +42,27 @@ const Presensi = ({ navigation }) => {
     const [locVisible, setLocVisible] = useState(true);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
+    const [refresh, setRefresh] = useState(true)
 
     const auth = useSelector((state) => state.auth);
     const thisAddress = useSelector((state) => state.address);
     const loc = useSelector((state) => state.location)
-    const address = (latitude, longitude) => {
-        dispatch(locationAction({ latitude: latitude, longitude: longitude, token: auth.auth.token, nip: auth.auth.username, ip, id }));
-        dispatch(addressAction({ latitude: latitude, longitude: longitude }))
-    }
 
     useEffect(() => {
-        (async () => {
-            setLoading(true)
-            let response_getGeo = await getGeo()
-            if (response_getGeo) {
-                address(response_getGeo.latitude, response_getGeo.longitude)
-            }
-            setLoading(false)
-        })();
-    }, [])
+        if (refresh) {
+            dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id }));
+            setRefresh(false)
+        }
+        return () => { }
+    }, [refresh])
 
     DeviceInfo.getAndroidId().then((androidId) => {
         setId(androidId)
     });
 
-
-    publicIP()
-        .then(ip => {
-            setIp(ip);
-            // '47.122.71.234'
-        })
-        .catch(error => {
-            setIp(error);
-            // 'Unable to get IP address.'
-        });
+    NetworkInfo.getIPAddress().then(ipAddress => {
+        setIp(ipAddress);
+    });
 
     const p = date.getFullYear()
     const q = date.getMonth() + 1
@@ -91,21 +79,21 @@ const Presensi = ({ navigation }) => {
         setCurrentTime(timeMoment)
     }, 1000);
 
-    const getGeo = () => GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 15000,
-    })
-        .then(location => {
-            setLong(location.longitude);
-            setLat(location.latitude)
-            return location
-        })
-        .catch(error => {
-            const { code, message } = error;
-            console.warn(code, message);
-            Alert.alert('Turn On Your Location')
-            navigation.navigate('HomepageScreen')
-        })
+    // const getGeo = () => GetLocation.getCurrentPosition({
+    //     enableHighAccuracy: true,
+    //     timeout: 15000,
+    // })
+    //     .then(location => {
+    //         setLong(location.longitude);
+    //         setLat(location.latitude)
+    //         return location
+    //     })
+    //     .catch(error => {
+    //         const { code, message } = error;
+    //         console.warn(code, message);
+    //         Alert.alert('Turn On Your Location')
+    //         navigation.navigate('HomepageScreen')
+    //     })
     return (
         <ImageBackground
             source={Background}
@@ -143,15 +131,11 @@ const Presensi = ({ navigation }) => {
                     <View style={styles.container3}>
                         <Text style={styles.textTitle}>Presensi Datang</Text>
                     </View>
-                    {/* <View style={styles.container5}>
-                        <Text style={styles.textJam}>Tanggal : {dayName}, {r}/{monthName}/{p}</Text>
-                        <Text style={styles.textJam}>Jam Server : {CurrentTime}</Text>
-                    </View> */}
                     <View style={styles.container6}>
                         <Text style={styles.textJam}>Tanggal</Text>
                         <View style={styles.container7}>
                             <Text style={styles.textGeo}>
-                                {dayName}, {r}/{monthName}/{p}
+                                {dayName}, {r} / {monthName} / {p}
                             </Text>
                         </View>
                     </View>
@@ -167,7 +151,7 @@ const Presensi = ({ navigation }) => {
                         <Text style={styles.textJam}>Lokasi</Text>
                         <View style={styles.container7}>
                             <Text style={styles.textGeo}>
-                                {thisAddress?.address?.place_name}
+                                {loc?.location?.lokasi}
                             </Text>
                         </View>
                     </View>
@@ -188,13 +172,10 @@ const Presensi = ({ navigation }) => {
                                 onPress={() => {
                                     setLoading(true)
                                     dispatch(datangAction({
-                                        latitude: lat,
-                                        longitude: long,
                                         token: auth.auth.token,
                                         nip: auth.auth.username,
                                         ip,
                                         id,
-                                        lokasi: thisAddress.address.place_name
                                     }))
                                     setLoading(false)
                                     setBerhasilVisible(true)
@@ -204,6 +185,7 @@ const Presensi = ({ navigation }) => {
                                 <Text style={styles.datangText}>Presensi</Text>
                             </TouchableOpacity>
                         </View>
+
                     </ScrollView>
                 </View>
             </View>

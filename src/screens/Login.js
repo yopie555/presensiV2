@@ -25,7 +25,7 @@ import Background from '../assets/background2.png'
 const Login = ({ navigation }) => {
     const [nip, setNip] = useState("");
     const [password, setPassword] = useState("");
-    const [ip, setIp] = useState("");
+    const [ip, setIp] = useState("127.0.0.0");
     const [id, setId] = useState("");
     const [loading, setLoading] = useState(false)
     const user = useSelector((state) => state.auth);
@@ -35,15 +35,15 @@ const Login = ({ navigation }) => {
         setId(androidId)
     });
 
-    publicIP()
-        .then(ip => {
-            setIp(ip);
-            // '47.122.71.234'
-        })
-        .catch(error => {
-            setIp(error);
-            // 'Unable to get IP address.'
-        });
+    // publicIP()
+    //     .then(ip => {
+    //         setIp(ip);
+    //         // '47.122.71.234'
+    //     })
+    //     .catch(error => {
+    //         setIp(error);
+    //         // 'Unable to get IP address.'
+    //     });
 
 
     return (

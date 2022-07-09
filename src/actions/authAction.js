@@ -27,7 +27,7 @@ export const loginAction = (value) => {
                 {
                     username: value.nip,
                     password: value.password,
-                    ip: value.ip,
+                    ip: '170.0.0.0',
                     mac: value.id
                 },
                 {

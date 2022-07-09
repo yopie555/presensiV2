@@ -20,12 +20,13 @@ import GetLocation from 'react-native-get-location'
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import BerhasilModal from '../components/PresensiBerhasil'
+import BerhasilModal2 from '../components/PresensiBerhasil2'
 import LocationModal from '../components/LocationModal';
 import { locationAction, addressAction } from '../actions/locationAction';
 import { pulangAction } from '../actions/absenAction';
 import DeviceInfo from 'react-native-device-info';
 import publicIP from 'react-native-public-ip';
+import { NetworkInfo } from 'react-native-network-info';
 
 import Logo2 from '../assets/umrah.png'
 import Background from '../assets/background4.png'
@@ -37,43 +38,31 @@ const Presensi2 = ({ navigation }) => {
     const [lat, setLat] = useState('');
     const [ip, setIp] = useState("");
     const [id, setId] = useState("");
-    const [berhasilVisible, setBerhasilVisible] = useState(false);
+    const [berhasilVisible2, setBerhasilVisible2] = useState(false);
     const [locVisible, setLocVisible] = useState(true);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
+    const [refresh, setRefresh] = useState(true)
 
     const auth = useSelector((state) => state.auth);
     const thisAddress = useSelector((state) => state.address);
-
-    const address = (latitude, longitude) => {
-        dispatch(locationAction({ latitude: latitude, longitude: longitude, token: auth.auth.token, nip: auth.auth.username, ip, id }));
-        dispatch(addressAction({ latitude: latitude, longitude: longitude }))
-    }
+    const loc = useSelector((state) => state.location)
 
     useEffect(() => {
-        (async () => {
-            setLoading(true)
-            let response_getGeo = await getGeo()
-            if (response_getGeo) {
-                address(response_getGeo.latitude, response_getGeo.longitude)
-            }
-            setLoading(false)
-        })();
-    }, [])
+        if (refresh) {
+            dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id }));
+            setRefresh(false)
+        }
+        return () => { }
+    }, [refresh])
 
     DeviceInfo.getAndroidId().then((androidId) => {
         setId(androidId)
     });
 
-    publicIP()
-        .then(ip => {
-            setIp(ip);
-            // '47.122.71.234'
-        })
-        .catch(error => {
-            setIp(error);
-            // 'Unable to get IP address.'
-        });
+    NetworkInfo.getIPAddress().then(ipAddress => {
+        setIp(ipAddress);
+    });
 
     const p = date.getFullYear()
     const q = date.getMonth() + 1
@@ -90,21 +79,21 @@ const Presensi2 = ({ navigation }) => {
         setCurrentTime(timeMoment)
     }, 1000);
 
-    const getGeo = () => GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 15000,
-    })
-        .then(location => {
-            setLong(location.longitude);
-            setLat(location.latitude)
-            return location
-        })
-        .catch(error => {
-            const { code, message } = error;
-            console.warn(code, message);
-            Alert.alert('Turn On Your Location')
-            navigation.navigate('HomepageScreen')
-        })
+    // const getGeo = () => GetLocation.getCurrentPosition({
+    //     enableHighAccuracy: true,
+    //     timeout: 15000,
+    // })
+    //     .then(location => {
+    //         setLong(location.longitude);
+    //         setLat(location.latitude)
+    //         return location
+    //     })
+    //     .catch(error => {
+    //         const { code, message } = error;
+    //         console.warn(code, message);
+    //         Alert.alert('Turn On Your Location')
+    //         navigation.navigate('HomepageScreen')
+    //     })
     return (
         <ImageBackground
             source={Background}
@@ -124,12 +113,12 @@ const Presensi2 = ({ navigation }) => {
                 <Modal
                     animationType="slide"
                     transparent={true}
-                    visible={berhasilVisible}
+                    visible={berhasilVisible2}
                     onRequestClose={() => {
-                        setBerhasilVisible(false);
+                        setBerhasilVisible2(false);
                     }}>
                     <View style={styles.welcomeModal}>
-                        <BerhasilModal setBerhasilVisible={setBerhasilVisible} />
+                        <BerhasilModal2 setBerhasilVisible2={setBerhasilVisible2} />
                     </View>
                 </Modal>
 
@@ -142,10 +131,6 @@ const Presensi2 = ({ navigation }) => {
                     <View style={styles.container3}>
                         <Text style={styles.textTitle}>Presensi Pulang</Text>
                     </View>
-                    {/* <View style={styles.container5}>
-                        <Text style={styles.textJam}>Tanggal : {dayName}, {r}/{monthName}/{p}</Text>
-                        <Text style={styles.textJam}>Jam Server : {CurrentTime}</Text>
-                    </View> */}
                     <View style={styles.container6}>
                         <Text style={styles.textJam}>Tanggal</Text>
                         <View style={styles.container7}>
@@ -166,7 +151,7 @@ const Presensi2 = ({ navigation }) => {
                         <Text style={styles.textJam}>Lokasi</Text>
                         <View style={styles.container7}>
                             <Text style={styles.textGeo}>
-                                {thisAddress?.address?.place_name}
+                                {loc?.location?.lokasi}
                             </Text>
                         </View>
                     </View>
@@ -187,16 +172,13 @@ const Presensi2 = ({ navigation }) => {
                                 onPress={() => {
                                     setLoading(true)
                                     dispatch(pulangAction({
-                                        latitude: lat,
-                                        longitude: long,
                                         token: auth.auth.token,
                                         nip: auth.auth.username,
                                         ip,
                                         id,
-                                        lokasi: thisAddress.address.place_name
                                     }))
                                     setLoading(false)
-                                    setBerhasilVisible(true)
+                                    setBerhasilVisible2(true)
                                     // navigation.navigate("HomepageScreen")
                                 }}
                             >

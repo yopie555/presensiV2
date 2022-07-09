@@ -29,11 +29,15 @@ const Homepage2 = ({ navigation }) => {
     const presensi = useSelector((state) => state.presensi)
     const profile = useSelector((state) => state.profile)
     const dispatch = useDispatch();
+    const [refreshing, setRefreshing] = React.useState(false);
+    const dataPresensi = () => {
+        dispatch(presensiAction({ token: auth.auth.token, nip: auth.auth.username }))
+        dispatch(profileAction({ token: auth.auth.token, nip: auth.auth.username }))
+    }
 
     useEffect(() => {
         if (refresh) {
-            dispatch(presensiAction({ token: auth.auth.token, nip: auth.auth.username }))
-            dispatch(profileAction({ token: auth.auth.token, nip: auth.auth.username }))
+            dataPresensi()
             setRefresh(false)
         }
         return () => { }
@@ -49,6 +53,7 @@ const Homepage2 = ({ navigation }) => {
     console.log('presensi', presensi);
 
     return (
+
         <View style={styles.container}>
             {/* <StatusBar hidden={true} /> */}
             <Modal
@@ -62,69 +67,77 @@ const Homepage2 = ({ navigation }) => {
                     <WelcomeModal setWelcomeVisible={setWelcomeVisible} />
                 </View>
             </Modal>
-
-            <ImageBackground
-                source={Background}
-                style={styles.background}>
-                <Image
-                    source={Logo2}
-                    style={styles.logo2} />
-                <Header />
-                <View style={styles.container4}>
-                    <Text style={styles.header}>
-                        PRESENSI HARI INI
-                    </Text>
-                </View>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                >
-                    <View style={styles.container8}>
-                        <Text style={styles.descriptionText}>Jam Datang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_dtg}</Text>
-                        <Text style={styles.descriptionText}>Lokasi Datang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_dtg}</Text>
-                        <Text style={styles.descriptionText}>Jam Pulang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_plg}</Text>
-                        <Text style={styles.descriptionText}>Lokasi Pulang</Text>
-                        <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_plg}</Text>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={dataPresensi}
+                    />
+                }
+            >
+                <ImageBackground
+                    source={Background}
+                    style={styles.background}>
+                    <Image
+                        source={Logo2}
+                        style={styles.logo2} />
+                    <Header />
+                    <View style={styles.container4}>
+                        <Text style={styles.header}>
+                            PRESENSI HARI INI
+                        </Text>
                     </View>
-                </ScrollView>
-                <View style={styles.container9}>
-                    <TouchableOpacity
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.container8}>
+                            <Text style={styles.descriptionText}>Jam Datang</Text>
+                            <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_dtg}</Text>
+                            <Text style={styles.descriptionText}>Lokasi Datang</Text>
+                            <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_dtg}</Text>
+                            <Text style={styles.descriptionText}>Jam Pulang</Text>
+                            <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.jam_plg}</Text>
+                            <Text style={styles.descriptionText}>Lokasi Pulang</Text>
+                            <Text style={styles.detailsText}>{presensi?.presensi?.data_presensi?.lokasi_plg}</Text>
+                        </View>
+                    </ScrollView>
+                    <View style={styles.container9}>
+                        <TouchableOpacity
 
-                        onPress={() => navigation.navigate("PresensiScreen")}
-                        style={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? styles.disabledButton : styles.datangButton}
-                        disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? true : false}
-                    >
-                        <Icon
-                            name='login'
-                            size={60}
-                            color={"#fff"}
-                        />
-                        <Text
-                            style={presensi.presensi.cek_dtg == 0 ? styles.txtFotoD : styles.txtFoto}
+                            onPress={() => navigation.navigate("PresensiScreen")}
+                            style={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? styles.disabledButton : styles.datangButton}
+                            disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? true : false}
                         >
-                            Presensi Datang
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("PresensiScreen2")}
-                        style={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? styles.disabledButton : styles.pulangButton}
-                        disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? true : false}
-                    >
-                        <Icon
-                            name='logout'
-                            size={60}
-                            color={"#fff"}
-                        />
-                        <Text
-                            style={presensi.presensi.cek_plg == 0 ? styles.txtFotoD : styles.txtFoto}
+                            <Icon
+                                name='login'
+                                size={60}
+                                color={"#fff"}
+                            />
+                            <Text
+                                style={presensi.presensi.cek_dtg == 0 ? styles.txtFotoD : styles.txtFoto}
+                            >
+                                Presensi Datang
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("PresensiScreen2")}
+                            style={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? styles.disabledButton : styles.pulangButton}
+                        // disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? true : false}
                         >
-                            Presensi Pulang
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </ImageBackground>
+                            <Icon
+                                name='logout'
+                                size={60}
+                                color={"#fff"}
+                            />
+                            <Text
+                                style={presensi.presensi.cek_plg == 0 ? styles.txtFotoD : styles.txtFoto}
+                            >
+                                Presensi Pulang
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ImageBackground>
+            </ScrollView>
         </View>
     );
 }

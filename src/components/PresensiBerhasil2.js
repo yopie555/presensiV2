@@ -8,22 +8,22 @@ import img2 from '../assets/failed.png'
 
 const PresensiBerhasil = (props) => {
     const navigation = useNavigation();
-    const datang = useSelector((state) => state.datang);
-    console.log('daatang', datang);
+    const pulang = useSelector((state) => state.pulang);
+    console.log('daatang', pulang);
 
     setTimeout(() => {
-        props.setBerhasilVisible(false)
+        props.setBerhasilVisible2(false)
         navigation.navigate("HomepageScreen")
     }, 2500);
     return (
         <View style={styles.container}>
-            {datang.error ?
+            {pulang.error ?
                 <View style={styles.error}>
                     <Image
                         source={img2}
                         style={styles.img2}
                     />
-                    <Text style={styles.text}>{datang.error.message}</Text>
+                    <Text style={styles.text}>{pulang.error.message}</Text>
                 </View>
                 :
                 <View>
@@ -31,7 +31,7 @@ const PresensiBerhasil = (props) => {
                         source={Img}
                         style={styles.img}
                     />
-                    <Text style={styles.text}>{datang.datang.message}</Text>
+                    <Text style={styles.text}>{pulang.pulang.message}</Text>
                 </View>
             }
         </View >

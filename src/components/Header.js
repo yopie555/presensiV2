@@ -30,8 +30,8 @@ const Header = () => {
         profile.error &&
             removeValue()
         if (profile.error) {
-            // ToastAndroid.show('Terjadi Kesalahan, Silahkan Login Kembali', ToastAndroid.SHORT) 
-            Alert.alert("Terjadi Kesalahan, Silahkan Login Kembali") && dispatch(logoutAction()) && navigation.navigate('LoginScreen')
+            ToastAndroid.show('Terjadi Kesalahan, Silahkan Login Kembali', ToastAndroid.SHORT) && dispatch(logoutAction()) && navigation.navigate('LoginScreen')
+            // Alert.alert("Terjadi Kesalahan, Silahkan Login Kembali") 
         }
     }
     return (
