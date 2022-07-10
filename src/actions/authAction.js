@@ -27,7 +27,7 @@ export const loginAction = (value) => {
                 {
                     username: value.nip,
                     password: value.password,
-                    ip: '170.0.0.0',
+                    ip: value.ip,
                     mac: value.id
                 },
                 {
@@ -48,6 +48,7 @@ export const loginAction = (value) => {
             }));
         }
         catch (error) {
+            console.log('err log', error);
             dispatch(getLoginFailure(error.response.data.message));
         }
     }

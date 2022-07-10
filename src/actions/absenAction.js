@@ -17,8 +17,6 @@ export const getDatangFailure = (error) => ({
 });
 
 export const datangAction = (value) => {
-    console.log('value', value);
-
     return async (dispatch) => {
         try {
             dispatch(getDatangRequest());
@@ -26,7 +24,7 @@ export const datangAction = (value) => {
             const res = await axios.post(
                 url,
                 {
-                    ip: '170.0.0.0',
+                    ip: value.ip,
                     mac: value.id,
                 },
                 {
@@ -35,10 +33,8 @@ export const datangAction = (value) => {
                     },
                 }
             );
-            console.log('ini res datang', res.data);
             dispatch(getDatangSuccess(res.data));
         } catch (error) {
-            console.log('Get datang Error', error.response.data);
             dispatch(getDatangFailure(error.response.data));
         }
     };
@@ -59,8 +55,6 @@ export const getPulangFailure = (error) => ({
 });
 
 export const pulangAction = (value) => {
-    console.log('value', value);
-
     return async (dispatch) => {
         try {
             dispatch(getPulangRequest());
@@ -68,7 +62,7 @@ export const pulangAction = (value) => {
             const res = await axios.post(
                 url,
                 {
-                    ip: '170.0.0.0',
+                    ip: value.ip,
                     mac: value.id,
                 },
                 {
@@ -77,10 +71,8 @@ export const pulangAction = (value) => {
                     },
                 }
             );
-            console.log('ini res pulang', res.data);
             dispatch(getPulangSuccess(res.data));
         } catch (error) {
-            console.log('Get Pulang Error', error.response.data);
             dispatch(getPulangFailure(error.response.data));
         }
     };

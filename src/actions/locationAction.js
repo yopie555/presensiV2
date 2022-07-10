@@ -26,7 +26,7 @@ export const locationAction = (value) => {
                 {
                     latitude: value.latitude,
                     longitude: value.longitude,
-                    mac: 'a'
+                    mac: value.id
                 },
                 {
                     headers: {

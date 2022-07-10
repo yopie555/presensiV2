@@ -122,7 +122,7 @@ const Homepage2 = ({ navigation }) => {
                         <TouchableOpacity
                             onPress={() => navigation.navigate("PresensiScreen2")}
                             style={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? styles.disabledButton : styles.pulangButton}
-                        // disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? true : false}
+                            disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? true : false}
                         >
                             <Icon
                                 name='logout'
