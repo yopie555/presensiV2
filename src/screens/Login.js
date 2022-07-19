@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Text,
     View,
@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 import publicIP from 'react-native-public-ip';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Logo from '../assets/presensi.png'
 import Logo2 from '../assets/umrah.png'
@@ -26,6 +27,7 @@ const Login = ({ navigation }) => {
     const [nip, setNip] = useState("");
     const [password, setPassword] = useState("");
     const [ip, setIp] = useState("");
+    const [ipPublic, setIpPublic] = useState("")
     const [id, setId] = useState("");
     const [loading, setLoading] = useState(false)
     const user = useSelector((state) => state.auth);
@@ -35,20 +37,39 @@ const Login = ({ navigation }) => {
         setId(androidId)
     });
 
-    NetworkInfo.getIPAddress().then(ipAddress => {
-        setIp(ipAddress);
+    NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
+        setIp(defaultGateway);
     });
 
-    // publicIP()
-    //     .then(ip => {
-    //         setIp(ip);
-    //         // '47.122.71.234'
-    //     })
-    //     .catch(error => {
-    //         setIp(error);
-    //         // 'Unable to get IP address.'
-    //     });
+    publicIP()
+        .then(ip => {
+            setIpPublic(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIpPublic(error);
+            // 'Unable to get IP address.'
+        });
 
+    const getData = async () => {
+        try {
+            const passwords = await AsyncStorage.getItem('password')
+            const usernames = await AsyncStorage.getItem('username')
+            if (passwords !== null && usernames !== null) {
+                // value previously stored
+                setNip(usernames)
+                setPassword(passwords)
+            }
+        } catch (e) {
+            // error reading value
+        }
+    }
+
+    useEffect(() => {
+        getData()
+    }, []);
+
+    console.log('data', password);
 
     return (
         <View style={styles.container}>
@@ -113,7 +134,7 @@ const Login = ({ navigation }) => {
                             ) { ToastAndroid.show("Harap Isi Semua Data", 2000) }
                             else {
                                 setLoading(true)
-                                await dispatch(loginAction({ nip, password, ip, id }))
+                                await dispatch(loginAction({ nip, password, ip, id, ipPublic }))
                                 setLoading(false)
                                 // navigation.navigate("HomepageScreen")
                             }

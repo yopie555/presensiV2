@@ -26,6 +26,7 @@ export const datangAction = (value) => {
                 {
                     ip: value.ip,
                     mac: value.id,
+                    ip_public: value.ipPublic
                 },
                 {
                     headers: {
@@ -64,6 +65,7 @@ export const pulangAction = (value) => {
                 {
                     ip: value.ip,
                     mac: value.id,
+                    ip_public: value.ipPublic
                 },
                 {
                     headers: {

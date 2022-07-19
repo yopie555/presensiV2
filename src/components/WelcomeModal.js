@@ -22,7 +22,7 @@ const welcome = (props) => {
                     color={"#264384"}
                 />
             </TouchableOpacity>
-            {profile.profile.Doskar === "Dosen" ? <Text style={styles.text}>Tombol presensi pulang akan muncul setelah 2 jam dari waktu presensi datang</Text> : <Text style={styles.text}>Tombol presensi datang akan muncul dari 06:00:00 sampai 08:30:00 {"\n"} {"\n"} Tombol presensi pulang akan muncul dari 14:30:00 sampai 19:00:00</Text>}
+            {profile.profile.Doskar === "Dosen" ? <Text style={styles.text}>Tombol presensi pulang akan muncul setelah 2 jam dari waktu presensi datang</Text> : <Text style={styles.text}>Tombol presensi datang akan muncul dari 06:00:00 sampai 08:30:00 {"\n"} {"\n"} Tombol presensi pulang akan muncul dari 16:00:00 sampai 23:00:00</Text>}
             {/* <Text style={styles.text}>Tombol presensi pulang akan muncul dari 14:30:00 sampai 19:00:00</Text> */}
         </View>
     );

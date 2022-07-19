@@ -22,8 +22,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BerhasilModal from '../components/PresensiBerhasil'
 import LocationModal from '../components/LocationModal';
-import { locationAction, addressAction } from '../actions/locationAction';
 import { datangAction } from '../actions/absenAction';
+// import { locationAction, addressAction } from '../actions/locationAction';
 import DeviceInfo from 'react-native-device-info';
 import publicIP from 'react-native-public-ip';
 import { NetworkInfo } from 'react-native-network-info';
@@ -36,33 +36,45 @@ const Presensi = ({ navigation }) => {
     const [date, setDate] = useState(new Date());
     const [long, setLong] = useState('');
     const [lat, setLat] = useState('');
-    const [ip, setIp] = useState("");
-    const [id, setId] = useState("");
     const [berhasilVisible, setBerhasilVisible] = useState(false);
     const [locVisible, setLocVisible] = useState(true);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
     const [refresh, setRefresh] = useState(true)
-
+    const [ip, setIp] = useState("");
+    const [ipPublic, setIpPublic] = useState("")
+    const [id, setId] = useState("");
     const auth = useSelector((state) => state.auth);
     const thisAddress = useSelector((state) => state.address);
     const loc = useSelector((state) => state.location)
 
-    useEffect(() => {
-        if (refresh) {
-            dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id }));
-            setRefresh(false)
-        }
-        return () => { }
-    }, [refresh])
+    // useEffect(() => {
+    //     if (refresh) {
+    //         dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id, ipPublic }));
+    //         setRefresh(false)
+    //     }
+    //     return () => { }
+    // }, [refresh])
 
     DeviceInfo.getAndroidId().then((androidId) => {
         setId(androidId)
     });
 
-    NetworkInfo.getIPAddress().then(ipAddress => {
-        setIp(ipAddress);
+    NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
+        console.log(defaultGateway);
+        setIp(defaultGateway);
     });
+
+    publicIP()
+        .then(ip => {
+            setIpPublic(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIpPublic(error);
+            // 'Unable to get IP address.'
+        });
+
 
     const p = date.getFullYear()
     const q = date.getMonth() + 1
@@ -176,6 +188,7 @@ const Presensi = ({ navigation }) => {
                                         nip: auth.auth.username,
                                         ip,
                                         id,
+                                        ipPublic
                                     }))
                                     setLoading(false)
                                     setBerhasilVisible(true)

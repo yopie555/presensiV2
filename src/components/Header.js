@@ -44,7 +44,7 @@ const Header = () => {
             <Text style={styles.text}>
                 {profile?.profile?.Name}
                 {'\n'}
-                NIP : {user?.auth?.nip}
+                NIP : {user?.auth?.username}
                 {'\n'}
                 {profile?.profile?.Unit}
             </Text>

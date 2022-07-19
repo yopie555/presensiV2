@@ -34,10 +34,10 @@ const RiwayatCard = (props) => {
                 <Text style={styles.text}>Lokasi                 : </Text>
                 <Text style={styles.text} >{props.lokD}</Text>
             </View>
-            <View style={styles.containerT}>
+            {/* <View style={styles.containerT}>
                 <Text style={styles.text}>Detail Kerja       : </Text>
                 <Text style={styles.text}>{props.renK}</Text>
-            </View>
+            </View> */}
             {/* <View style={styles.containerT}>
                 <Text style={styles.text}>Jam Pulang      : </Text>
                 <Text style={styles.text}>{props.jamP}</Text>

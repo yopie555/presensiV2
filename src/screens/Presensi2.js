@@ -37,12 +37,14 @@ const Presensi2 = ({ navigation }) => {
     const [long, setLong] = useState('');
     const [lat, setLat] = useState('');
     const [ip, setIp] = useState("");
+    const [ipPublic, setIpPublic] = useState("")
     const [id, setId] = useState("");
     const [berhasilVisible2, setBerhasilVisible2] = useState(false);
     const [locVisible, setLocVisible] = useState(true);
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
     const [refresh, setRefresh] = useState(true)
+
 
     const auth = useSelector((state) => state.auth);
     const thisAddress = useSelector((state) => state.address);
@@ -60,9 +62,20 @@ const Presensi2 = ({ navigation }) => {
         setId(androidId)
     });
 
-    NetworkInfo.getIPAddress().then(ipAddress => {
-        setIp(ipAddress);
+    NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
+        console.log(defaultGateway);
+        setIp(defaultGateway);
     });
+
+    publicIP()
+        .then(ip => {
+            setIpPublic(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIpPublic(error);
+            // 'Unable to get IP address.'
+        });
 
     const p = date.getFullYear()
     const q = date.getMonth() + 1
@@ -176,6 +189,7 @@ const Presensi2 = ({ navigation }) => {
                                         nip: auth.auth.username,
                                         ip,
                                         id,
+                                        ipPublic
                                     }))
                                     setLoading(false)
                                     setBerhasilVisible2(true)

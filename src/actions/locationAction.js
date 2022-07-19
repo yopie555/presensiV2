@@ -20,13 +20,13 @@ export const locationAction = (value) => {
     return async (dispatch) => {
         try {
             dispatch(getLocationRequest());
-            let url = `${BASE_URL}/cek_lokasi?username=${value.nip}&token=${value.token}&ip=170.0.0.0`
+            let url = `${BASE_URL}/cek_lokasi?username=${value.nip}&token=${value.token}`
             const res = await axios.post(
                 url,
                 {
-                    latitude: value.latitude,
-                    longitude: value.longitude,
-                    mac: value.id
+                    ip: value.ip,
+                    mac: value.id,
+                    ip_public: value.ipPublic
                 },
                 {
                     headers: {
@@ -37,7 +37,7 @@ export const locationAction = (value) => {
             // console.log('ini res location', res);
             dispatch(getLocationSuccess(res.data));
         } catch (error) {
-            console.log('Get location Error', error.response.data);
+            console.log('Get location Error', error);
             dispatch(getLocationFailure(error.response.data));
         }
     };

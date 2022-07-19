@@ -22,9 +22,17 @@ import Background from '../assets/background3.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { presensiAction, profileAction } from '../actions/presensiAction';
 
+import { locationAction, addressAction } from '../actions/locationAction';
+import DeviceInfo from 'react-native-device-info';
+import publicIP from 'react-native-public-ip';
+import { NetworkInfo } from 'react-native-network-info';
+
 const Homepage2 = ({ navigation }) => {
     const [welcomeVisible, setWelcomeVisible] = useState(true);
     const [refresh, setRefresh] = useState(true)
+    const [ip, setIp] = useState("");
+    const [ipPublic, setIpPublic] = useState("")
+    const [id, setId] = useState("");
     const auth = useSelector((state) => state.auth)
     const presensi = useSelector((state) => state.presensi)
     const profile = useSelector((state) => state.profile)
@@ -42,6 +50,25 @@ const Homepage2 = ({ navigation }) => {
         }
         return () => { }
     }, [refresh])
+
+    DeviceInfo.getAndroidId().then((androidId) => {
+        setId(androidId)
+    });
+
+    NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
+        console.log(defaultGateway);
+        setIp(defaultGateway);
+    });
+
+    publicIP()
+        .then(ip => {
+            setIpPublic(ip);
+            // '47.122.71.234'
+        })
+        .catch(error => {
+            setIpPublic(error);
+            // 'Unable to get IP address.'
+        });
 
     // if (presensi.loading == true) {
     //     return (
@@ -104,7 +131,10 @@ const Homepage2 = ({ navigation }) => {
                     <View style={styles.container9}>
                         <TouchableOpacity
 
-                            onPress={() => navigation.navigate("PresensiScreen")}
+                            onPress={() => {
+                                navigation.navigate("PresensiScreen")
+                                dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id, ipPublic }));
+                            }}
                             style={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? styles.disabledButton : styles.datangButton}
                             disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_dtg == 0 ? true : false}
                         >
@@ -120,7 +150,10 @@ const Homepage2 = ({ navigation }) => {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("PresensiScreen2")}
+                            onPress={() => {
+                                navigation.navigate("PresensiScreen2")
+                                dispatch(locationAction({ token: auth.auth.token, nip: auth.auth.username, ip, id, ipPublic }));
+                            }}
                             style={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? styles.disabledButton : styles.pulangButton}
                             disabled={presensi.presensi.cek == 0 || presensi.presensi.cek_plg == 0 ? true : false}
                         >
